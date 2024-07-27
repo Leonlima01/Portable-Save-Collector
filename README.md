@@ -5,6 +5,7 @@
  
 ## Bug-fixes
 
+- Arquivos não estão sendo substituidos.
 - `Ver 0.2` ~~Transferir para mesma pasta causa um erro no programa.~~
 - `Ver 0.2` ~~Colocar diretórios inválidos de origem ou destino causa um erro no programa.~~
 
