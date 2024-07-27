@@ -1,1 +1,2 @@
-savesOutput/*.*
+savesOutput/*
+!savesOutput
