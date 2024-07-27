@@ -1,2 +1,3 @@
 savesOutput/*
-!savesOutput/.gitkeep
+dist/savesOutput/*
+build/*

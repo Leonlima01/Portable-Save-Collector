@@ -1,6 +1,7 @@
 import os
 import time
 import shutil
+import sys
 
 class Model:
     
@@ -33,12 +34,14 @@ class Model:
                 if extensao == '.srm':
 
                     if makeBackup:
-                        myDir = os.path.dirname(os.path.abspath(__file__))
-                        backupDir = os.path.join(myDir, os.pardir, "savesOutput")
-                        backupDir = os.path.abspath(backupDir)
-                        backup = os.path.join(myDir, backupDir)
-                        os.makedirs(backup, exist_ok=True)
-                        shutil.copy(caminho_completo,backup)
+                        backupDir = self.makeSaveFolder()
+                        
+                        # Defina o caminho completo do arquivo de destino
+                        fileName = os.path.basename(caminho_completo)
+                        backupFile = os.path.join(backupDir, fileName)
+                        
+                        # Copie o arquivo para o diretório de backup
+                        shutil.copy(caminho_completo, backupFile)
                     
                     shutil.copy(caminho_completo,output)
                     self.savesLidos += 1
@@ -48,3 +51,23 @@ class Model:
                 self.controller.updateAmount([self.savesLidos,self.arquivosLidos])
             if os.path.isdir(caminho_completo):
                 self.folderScan(caminho_completo,output,makeBackup)
+
+    def get_script_directory(self):
+        if getattr(sys, 'frozen', False):
+            # Se o script estiver em um executável (usando PyInstaller)
+            return os.path.dirname(sys.executable)
+        else:
+            # Se o script estiver sendo executado normalmente
+            return os.path.dirname(os.path.abspath(__file__))
+
+    def makeSaveFolder(self):
+        #Cria pasta
+
+        myDir = self.get_script_directory()
+        backupDir = os.path.join(myDir, 'savesBackup')
+        backupDir = os.path.abspath(backupDir)
+
+        # Crie o diretório de backup se ele não existir
+        os.makedirs(backupDir, exist_ok=True)
+        print(backupDir)
+        return backupDir
