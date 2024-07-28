@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+import sys
+import os
 
 class View:
     def __init__(self, controller):
@@ -13,6 +15,9 @@ class View:
         self.root = tk.Tk()
         self.root.title("Portable Save Collector")
         self.root.resizable(False, False)
+
+        icon_path = self.resource_path('gameboyico.ico')
+        self.root.iconbitmap(icon_path)
         self.root.config(bg=self.backgroundColor)
 
         # Criação dos widgets
@@ -23,7 +28,11 @@ class View:
         
         self.fromFrame = tk.Frame(self.mainFrame,bg=self.backgroundColor)
         self.fromPathEntry = tk.Entry(self.fromFrame, width=35)
-        self.fromPathEntry .insert(0,"\\\\192.168.0.37\\roms")
+        
+        de="\\\\192.168.0.37\\roms"
+        #de="C:/Users/Leon/Desktop/Nova pasta (2)/Pasta 1"
+        
+        self.fromPathEntry .insert(0,de)
         self.fromPathEntry .pack(side=tk.RIGHT,pady=5)
 
         self.fromPathButton = tk.Button(self.fromFrame, text="De", command=self.getFromPath, width=5)
@@ -32,23 +41,31 @@ class View:
 
         self.toFrame = tk.Frame(self.mainFrame,bg=self.backgroundColor)
         self.toPathEntry = tk.Entry(self.toFrame, width=35)
-        self.toPathEntry.insert(0,"\\\\192.168.0.37\\config\\retroarch\saves")
+        
+        para="\\\\192.168.0.37\\config\\retroarch\saves"
+        #para="C:/Users/Leon/Desktop/Nova pasta (2)/Pasta 2"
+        
+        self.toPathEntry.insert(0,para)
         self.toPathEntry.pack(side=tk.RIGHT,pady=5)
         
         self.toPathButton = tk.Button(self.toFrame, text="Para", command=self.getToPath, width=5)
         self.toPathButton.pack(side=tk.RIGHT, padx=2.5, pady=5)
         self.toFrame.pack()
         
-        
-        
+        self.checkBoxFrame = tk.Frame(self.mainFrame)
+        self.makeBackup = tk.BooleanVar()
+        self.backupCBox = tk.Checkbutton(self.checkBoxFrame,text="Backup dos Saves",variable=self.makeBackup,bg=self.backgroundColor)
+        self.backupCBox.pack(side=tk.LEFT)
+
+        self.getROM = tk.BooleanVar()
+        self.getROMCBox = tk.Checkbutton(self.checkBoxFrame, text="Backup das ROMs", variable=self.getROM, bg=self.backgroundColor)
+        self.getROMCBox.pack(side=tk.LEFT)
+        self.checkBoxFrame.pack()
+
         self.buttonFrame = tk.Frame(self.mainFrame,bg=self.backgroundColor)
-        self.findButton = tk.Button(self.buttonFrame, text="Procurar", command=self.scan)
+        self.findButton = tk.Button(self.buttonFrame, text="Copiar", command=self.scan)
         self.findButton.pack(side=tk.LEFT, padx=2.5, pady=5)
         self.buttonFrame.pack()
-
-        self.makeBackup = tk.BooleanVar()
-        self.backupCBox = tk.Checkbutton(self.mainFrame,text="Fazer Backup",variable=self.makeBackup,bg=self.backgroundColor)
-        self.backupCBox.pack()
 
         self.statusLabel = tk.Label(self.mainFrame, text= "Aguardando",bg=self.backgroundColor)
         self.statusLabel.pack()
@@ -108,8 +125,8 @@ class View:
     def removeAllLabels(self):
         for widget in self.canvas_frame.winfo_children():
             widget.destroy()
-    def addSaveToCanvas(self, saveFile):
-        self.saveLabel = ttk.Label(self.canvas_frame, text = saveFile, anchor='w', justify="left")
+    def addSaveToCanvas(self, saveFile,color):
+        self.saveLabel = ttk.Label(self.canvas_frame, text = saveFile, anchor='w', justify="left",background=color)
         self.saveLabel.pack(fill='x',pady=2)
         self.my_canvas.configure(scrollregion=self.my_canvas.bbox("all"))
         self.root.update()
@@ -135,3 +152,13 @@ class View:
     def run(self):
         print("View iniciada com sucesso.")
         self.root.mainloop()
+
+    def resource_path(self, relative_path):
+        """ Obtém o caminho absoluto para recursos, funciona para executáveis PyInstaller e desenvolvimento local """
+        try:
+            # PyInstaller cria uma pasta temporária e armazena o caminho nela
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)

@@ -9,4 +9,4 @@ if __name__ == "__main__":
     
     main()
 
-# python -m PyInstaller --onefile --noconsole --name Portable_Save_Collector main.py
+# python -m PyInstaller --onefile --noconsole --name Portable_Save_Collector --icon=gameboyico.ico --add-data "gameboyico.ico;." main.py
